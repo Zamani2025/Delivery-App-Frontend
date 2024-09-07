@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/service/order_service.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class OrdersPage extends StatefulWidget {
@@ -80,7 +79,6 @@ class _OrdersPageState extends State<OrdersPage> {
                   itemCount: ordersProvider.order.length,
                   itemBuilder: (context, index) {
                     final order = ordersProvider.order;
-                    final dta = DateFormat("yyyy-MM-dd").parse(order[index].createdAt);
                     return Padding(
                       padding:
                           const EdgeInsets.only(top: 10, left: 10, right: 10),
@@ -88,13 +86,18 @@ class _OrdersPageState extends State<OrdersPage> {
                         height: 200,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            color: Colors.black,
+                            image: const DecorationImage(
+                                image: AssetImage(
+                                    "assets/images/no_background_2.png")),
+                            color: const Color.fromARGB(255, 99, 2, 38),
                             borderRadius: BorderRadius.circular(20)),
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Column(
                             children: [
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
                                     child: Column(
@@ -106,21 +109,87 @@ class _OrdersPageState extends State<OrdersPage> {
                                         Text(
                                           'Order ID ${order[index].orderId}',
                                           style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
+                                              color: Colors.yellow,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 30),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
                                         ),
                                         Text(
-                                          'Order Date ${dta}',
+                                          order[index].receiverName,
                                           style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
+                                              color: Colors.yellow,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(Icons.delete, color: Colors.red,))
+                                  TextButton(
+                                    onPressed: () {},
+                                    style: const ButtonStyle(
+                                      backgroundColor:
+                                          WidgetStatePropertyAll(Colors.white),
+                                    ),
+                                    child: const Text("Cancel"),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    order[index].ppickupAddress,
+                                    style: const TextStyle(
+                                        color: Colors.yellow,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
+                                  Text(
+                                    order[index].deliveryAddress,
+                                    style: const TextStyle(
+                                        color: Colors.yellow,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    order[index].receiverPhone,
+                                    style: const TextStyle(
+                                        color: Colors.yellow,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
+                                  Container(
+                                    height: 30,
+                                    width: 120,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
+                                    child: Center(
+                                      child: Text(
+                                        order[index].status,
+                                        style: const TextStyle(
+                                            color:
+                                                Color.fromARGB(255, 51, 52, 51),
+                                            fontSize: 18),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],

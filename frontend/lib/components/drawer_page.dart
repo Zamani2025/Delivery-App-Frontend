@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/login_page.dart';
+import 'package:frontend/pages/orders_page.dart';
 import 'package:frontend/service/user_service.dart';
 
 // ignore: must_be_immutable
@@ -99,14 +100,19 @@ class _DrawerPageState extends State<DrawerPage> {
               ),
             ),
             const Divider(),
-            const ListTile(
-              title: Text(
-                'My Orders',
-                style: TextStyle(color: Colors.white),
-              ),
-              leading: Icon(
-                Icons.shopping_bag,
-                color: Colors.white,
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const OrdersPage(),
+              )),
+              child: const ListTile(
+                title: Text(
+                  'My Orders',
+                  style: TextStyle(color: Colors.white),
+                ),
+                leading: Icon(
+                  Icons.shopping_bag,
+                  color: Colors.white,
+                ),
               ),
             ),
             const Divider(),

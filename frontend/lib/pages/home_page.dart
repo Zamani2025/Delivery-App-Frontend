@@ -521,7 +521,6 @@ class _HomePageState extends State<HomePage> {
                                                   onSaved: (newValue) {
                                                     packageAddress = newValue!;
                                                   },
-                                                  maxLines: 3,
                                                   decoration:
                                                       const InputDecoration(
                                                     labelText:

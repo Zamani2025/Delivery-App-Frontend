@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/landing_page.dart';
+import 'package:frontend/service/message_service.dart';
 import 'package:frontend/service/order_service.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,9 @@ void main() {
       ChangeNotifierProvider(
         create: (_) => OrdersProvider(),
       ),
+      ChangeNotifierProvider(
+        create: (_) => MessageProvider(),
+      )
     ],
     child: const MyApp(),
   ));

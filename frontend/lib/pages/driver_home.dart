@@ -7,6 +7,7 @@ import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:workmanager/workmanager.dart';
 
 class DriverHome extends StatefulWidget {
   const DriverHome({super.key});
@@ -21,6 +22,15 @@ class _DriverHomeState extends State<DriverHome> {
   var email;
   var last_name;
   bool isLoading = false;
+
+  void startNotificationScheduler() {
+    Workmanager().registerPeriodicTask(
+      "5_min_task",
+      "send_notification",
+      frequency: const Duration(minutes: 5),
+      inputData: {"key": "value"},
+    );
+  }
 
   Future<void> _changeOrderStatus(String id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -368,6 +378,7 @@ class _DriverHomeState extends State<DriverHome> {
                                                       onPressed: () {
                                                         _changeOrderStatus(
                                                             "${order[index].id}");
+                                                        startNotificationScheduler();
                                                       },
                                                       style: const ButtonStyle(
                                                         backgroundColor:
@@ -383,6 +394,8 @@ class _DriverHomeState extends State<DriverHome> {
                                                           onPressed: () {
                                                             _changeOrderStatus(
                                                                 "${order[index].id}");
+                                                            Workmanager()
+                                                                .cancelAll();
                                                           },
                                                           style:
                                                               const ButtonStyle(

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/components/drawer_page.dart';
-import 'package:frontend/pages/notification_page.dart';
 import 'package:frontend/service/order_service.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +27,61 @@ class _DriverHomeState extends State<DriverHome> {
     final accessToken = preferences.getString("access_token");
     final response = await http.post(
         Uri.parse("http://10.0.2.2:8000/api/change-orders/$id/"),
+        headers: {
+          "Content-type": 'application/json',
+          "Authorization": "Bearer $accessToken"
+        });
+
+    if (response.statusCode == 200) {
+      setState(() {
+        isLoading = true;
+      });
+      String message = json.decode(response.body)['message'];
+
+      MotionToast.success(
+        description: Text(
+          message,
+          style: const TextStyle(color: Colors.white),
+        ),
+        title: const Text(
+          "Success",
+          style: TextStyle(color: Colors.white),
+        ),
+        dismissable: true,
+        position: MotionToastPosition.top,
+        enableAnimation: true,
+        toastDuration: const Duration(seconds: 10),
+        layoutOrientation: TextDirection.ltr,
+        animationType: AnimationType.fromLeft,
+      ).show(context);
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      MotionToast.error(
+        description: const Text(
+          "Failed to response orders",
+          style: TextStyle(color: Colors.white),
+        ),
+        title: const Text(
+          "Error",
+          style: TextStyle(color: Colors.white),
+        ),
+        dismissable: true,
+        position: MotionToastPosition.top,
+        enableAnimation: true,
+        toastDuration: const Duration(seconds: 10),
+        layoutOrientation: TextDirection.ltr,
+        animationType: AnimationType.fromLeft,
+      ).show(context);
+    }
+  }
+
+  Future<void> _rejectOrder(String id) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final accessToken = preferences.getString("access_token");
+    final response = await http.post(
+        Uri.parse("http://10.0.2.2:8000/api/reject-orders/$id/"),
         headers: {
           "Content-type": 'application/json',
           "Authorization": "Bearer $accessToken"
@@ -122,16 +176,6 @@ class _DriverHomeState extends State<DriverHome> {
       backgroundColor: const Color.fromARGB(255, 99, 2, 38),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 99, 2, 38),
-        actions: [
-          IconButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const NotificationPage(),
-                  )),
-              icon: const Icon(
-                Icons.notifications,
-                color: Colors.white,
-              ))
-        ],
         leading: Builder(builder: (context) {
           return IconButton(
             onPressed: () => Scaffold.of(context).openDrawer(),
@@ -289,15 +333,23 @@ class _DriverHomeState extends State<DriverHome> {
                                                       style: const ButtonStyle(
                                                         backgroundColor:
                                                             WidgetStatePropertyAll(
-                                                                Colors.white),
+                                                          Color.fromARGB(
+                                                              255, 16, 210, 6),
+                                                        ),
                                                       ),
-                                                      child:
-                                                          const Text("Reject"),
+                                                      child: const Text(
+                                                        "Accept",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
                                                     ),
-                                                    const SizedBox(width: 10,),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
                                                     TextButton(
                                                       onPressed: () {
-                                                        _changeOrderStatus(
+                                                        _rejectOrder(
                                                             "${order[index].id}");
                                                       },
                                                       style: const ButtonStyle(
@@ -306,7 +358,7 @@ class _DriverHomeState extends State<DriverHome> {
                                                                 Colors.white),
                                                       ),
                                                       child:
-                                                          const Text("Accept"),
+                                                          const Text("Reject"),
                                                     )
                                                   ],
                                                 )

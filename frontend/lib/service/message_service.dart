@@ -10,6 +10,8 @@ class MessageProvider extends ChangeNotifier {
 
   List<Message> get message => _message;
 
+  int get messageCount => message.length;
+
   Future<List<Message>> fetchMessage() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final accessToken = preferences.getString("access_token");

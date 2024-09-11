@@ -206,8 +206,20 @@ class _OrdersPageState extends State<OrdersPage> {
                                             ),
                                             child: const Text("Delete"),
                                           )
-                                        : order[index].status == "in_transit"
-                                            ? const Center()
+                                        : order[index].status == "cancelled"
+                                            ? TextButton(
+                                                onPressed: () {
+                                                  _cancelOrders(
+                                                      "${order[index].id}");
+                                                },
+                                                style: const ButtonStyle(
+                                                  backgroundColor:
+                                                      WidgetStatePropertyAll(
+                                                    Colors.white,
+                                                  ),
+                                                ),
+                                                child: const Text("Delete"),
+                                              )
                                             : order[index].status == "pending"
                                                 ? TextButton(
                                                     onPressed: () {

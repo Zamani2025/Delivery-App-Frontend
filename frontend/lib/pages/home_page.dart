@@ -4,6 +4,8 @@ import 'package:frontend/components/dashboard_item.dart';
 import 'package:frontend/components/drawer_page.dart';
 import 'package:frontend/pages/notification_page.dart';
 import 'package:frontend/pages/orders_page.dart';
+import 'package:frontend/service/message_service.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:motion_toast/motion_toast.dart';
 
@@ -229,14 +231,32 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 99, 2, 38),
         actions: [
-          IconButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const NotificationPage(),
-                  )),
-              icon: const Icon(
-                Icons.notifications,
-                color: Colors.white,
-              ))
+          Consumer<MessageProvider>(
+            builder: (_,message, __) {
+              return Stack(
+                children: [
+                  Positioned(
+                    right: 10,
+                    child: Text(
+                      "${message.messageCount}",
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 5, 192, 11),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                  ),
+                  IconButton(
+                      onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const NotificationPage(),
+                          )),
+                      icon: const Icon(
+                        Icons.notifications,
+                        color: Colors.white,
+                      )),
+                ],
+              );
+            }
+          )
         ],
         leading: Builder(builder: (context) {
           return IconButton(

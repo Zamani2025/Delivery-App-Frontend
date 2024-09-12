@@ -7,7 +7,6 @@ import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:workmanager/workmanager.dart';
 
 class DriverHome extends StatefulWidget {
   const DriverHome({super.key});
@@ -22,15 +21,6 @@ class _DriverHomeState extends State<DriverHome> {
   var email;
   var last_name;
   bool isLoading = false;
-
-  void startNotificationScheduler() {
-    Workmanager().registerPeriodicTask(
-      "5_min_task",
-      "send_notification",
-      frequency: const Duration(minutes: 5),
-      inputData: {"key": "value"},
-    );
-  }
 
   Future<void> _changeOrderStatus(String id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -330,55 +320,64 @@ class _DriverHomeState extends State<DriverHome> {
                                           ],
                                         ),
                                       ),
-                                      order[index].status == "delivered"
-                                          ? const Text("Delete")
-                                          : order[index].status == "pending"
-                                              ? Row(
-                                                  children: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        _changeOrderStatus(
-                                                            "${order[index].id}");
-                                                      },
-                                                      style: const ButtonStyle(
-                                                        backgroundColor:
-                                                            WidgetStatePropertyAll(
-                                                          Color.fromARGB(
-                                                              255, 16, 210, 6),
-                                                        ),
-                                                      ),
-                                                      child: const Text(
-                                                        "Accept",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
+                                      order[index].status == "pending"
+                                          ? Row(
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    _changeOrderStatus(
+                                                        "${order[index].id}");
+                                                  },
+                                                  style: const ButtonStyle(
+                                                    backgroundColor:
+                                                        WidgetStatePropertyAll(
+                                                      Color.fromARGB(
+                                                          255, 16, 210, 6),
                                                     ),
-                                                    const SizedBox(
-                                                      width: 10,
+                                                  ),
+                                                  child: const Text(
+                                                    "Accept",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
                                                     ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        _rejectOrder(
-                                                            "${order[index].id}");
-                                                      },
-                                                      style: const ButtonStyle(
-                                                        backgroundColor:
-                                                            WidgetStatePropertyAll(
-                                                                Colors.white),
-                                                      ),
-                                                      child:
-                                                          const Text("Reject"),
-                                                    )
-                                                  ],
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    _rejectOrder(
+                                                        "${order[index].id}");
+                                                  },
+                                                  style: const ButtonStyle(
+                                                    backgroundColor:
+                                                        WidgetStatePropertyAll(
+                                                            Colors.white),
+                                                  ),
+                                                  child: const Text("Reject"),
+                                                )
+                                              ],
+                                            )
+                                          : order[index].status == "accepted"
+                                              ? TextButton(
+                                                  onPressed: () {
+                                                    _changeOrderStatus(
+                                                        "${order[index].id}");
+                                                  },
+                                                  style: const ButtonStyle(
+                                                    backgroundColor:
+                                                        WidgetStatePropertyAll(
+                                                            Colors.white),
+                                                  ),
+                                                  child: const Text("Transit"),
                                                 )
                                               : order[index].status ==
-                                                      "accepted"
+                                                      "in_transit"
                                                   ? TextButton(
                                                       onPressed: () {
                                                         _changeOrderStatus(
                                                             "${order[index].id}");
-                                                        startNotificationScheduler();
                                                       },
                                                       style: const ButtonStyle(
                                                         backgroundColor:
@@ -386,42 +385,21 @@ class _DriverHomeState extends State<DriverHome> {
                                                                 Colors.white),
                                                       ),
                                                       child:
-                                                          const Text("Transit"),
+                                                          const Text("Deliver"),
                                                     )
-                                                  : order[index].status ==
-                                                          "in_transit"
-                                                      ? TextButton(
-                                                          onPressed: () {
-                                                            _changeOrderStatus(
-                                                                "${order[index].id}");
-                                                            Workmanager()
-                                                                .cancelAll();
-                                                          },
-                                                          style:
-                                                              const ButtonStyle(
-                                                            backgroundColor:
-                                                                WidgetStatePropertyAll(
-                                                                    Colors
-                                                                        .white),
-                                                          ),
-                                                          child: const Text(
-                                                              "Deliver"),
-                                                        )
-                                                      : TextButton(
-                                                          onPressed: () {
-                                                            _changeOrderStatus(
-                                                                "${order[index].id}");
-                                                          },
-                                                          style:
-                                                              const ButtonStyle(
-                                                            backgroundColor:
-                                                                WidgetStatePropertyAll(
-                                                                    Colors
-                                                                        .white),
-                                                          ),
-                                                          child: const Text(
-                                                              "Delete"),
-                                                        )
+                                                  : TextButton(
+                                                      onPressed: () {
+                                                        _changeOrderStatus(
+                                                            "${order[index].id}");
+                                                      },
+                                                      style: const ButtonStyle(
+                                                        backgroundColor:
+                                                            WidgetStatePropertyAll(
+                                                                Colors.white),
+                                                      ),
+                                                      child:
+                                                          const Text("Delete"),
+                                                    ),
                                     ],
                                   ),
                                   const SizedBox(

@@ -1,14 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/firebase_options.dart';
 import 'package:frontend/pages/landing_page.dart';
 import 'package:frontend/service/message_service.dart';
 import 'package:frontend/service/order_service.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:http/http.dart' as http;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(
@@ -45,6 +49,18 @@ class _MyAppState extends State<MyApp> {
         print("Message received: ${message.notification?.title}");
       },
     );
+  }
+
+  void sendTokenToBackend(String token) async {
+    final response = await http.post(Uri.parse("uri"),
+        headers: <String, String>{'Content-Type': 'application/json'},
+        body: jsonEncode(
+            <String, String>{'token': token, 'user_type': 'customer'}));
+    if (response.statusCode == 200) {
+      print("Token saved successfully");
+    } else {
+      print("Fialed to save token");
+    }
   }
 
   @override
